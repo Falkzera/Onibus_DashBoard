@@ -2,6 +2,7 @@
 # Importação das bibliotecas
 import pandas as pd
 import streamlit as st
+import Home.Credito as Credito
 
 # Importnado planilhas
 df = pd.read_csv('data/df_final.csv')
@@ -98,21 +99,21 @@ with st.container():
         st.metric(
             label="Receita total no período",   
             value = "R$ {:,.2f}".format(valor_total).replace(',', 'X').replace('.', ',').replace('X', '.'),
-            delta=f"Variação {variacao_receita:.2f}%"  
+            # delta=f"Variação {variacao_receita:.2f}%"  
         )
 
     with col2:  
         st.metric(
             label="Passageiro total no período",   
             value = "{:,.2f}".format(passageiro_total).replace(',', 'X').replace('.', ',').replace('X', '.'),
-            delta=f"Variação {variacao_passageiro:.2f}%",   
+            # delta=f"Variação {variacao_passageiro:.2f}%",   
         )
 
     with col3: 
         st.metric(
             label="Passageiro total equivalente no período",   
             value = "{:,.2f}".format(equivalente_total).replace(',', 'X').replace('.', ',').replace('X', '.'),
-            delta=f"Variação {variacao_equivalente:.2f}%",
+            # delta=f"Variação {variacao_equivalente:.2f}%",
         )
 
 ########################################################################################
@@ -146,4 +147,6 @@ with st.container():
             st.area_chart(df_filtrado[analise])
 
 # Configuração da barra lateral
-st.sidebar.markdown('Developer by: [Lucas Falcão](https://GitHub.com/Falkzera)')
+with st.sidebar:
+    Credito.display_credits()
+   

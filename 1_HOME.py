@@ -1,6 +1,8 @@
 # Importação das bibliotecas
 import pandas as pd
 import streamlit as st
+import Home.Credito as Credito
+
 
 # Importnado planilhas
 df = pd.read_csv('data/df_final.csv')
@@ -20,11 +22,13 @@ st.button('Atualizar')
 
 st.title("#")
   
-# Configuração da barra lateral
-st.sidebar.markdown('Developer by: [Lucas Falcão](https://GitHub.com/Falkzera)')
 
 st.subheader(" Sobre o projeto 🎯")
 st.write(" Este projeto é um Dashboard interativo e dinâmico dedicado à análise do sistema de transporte público em Maceió/AL. O objetivo principal é fornecer uma visão abrangente e detalhada dos dados relacionados ao transporte público na cidade, facilitando a tomada de decisões e a identificação de áreas para melhorias.O projeto está em desenvolvimento e novas funcionalidades serão adicionadas em breve. ")
   
   
 st.caption("Desenvolvido por: [Lucas Falcão](https://GitHub.com/Falkzera)")
+
+with st.sidebar:
+    Credito.display_credits()
+   

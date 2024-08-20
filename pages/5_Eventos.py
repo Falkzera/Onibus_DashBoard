@@ -4,6 +4,7 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 from streamlit_option_menu import option_menu
+import Home.Credito as Credito
 
 # COnfiguração da página
 st.set_page_config(page_title="Empresas", page_icon=None, layout="wide", initial_sidebar_state="auto", menu_items=None)
@@ -283,8 +284,6 @@ elif selected == "Gool System":
         else:
             pass
 
-    # Configuração da barra lateral
-    st.sidebar.markdown('Developer by: [Lucas Falcão](https://GitHub.com/Falkzera)')
 
 ############################################################################################################
 elif selected == "Comparativo":
@@ -362,3 +361,8 @@ elif selected == "Comparativo":
                         color='EMPRESA',
                         color_discrete_map=cores_empresa)
             st.plotly_chart(fig)
+
+#######################
+with st.sidebar:
+    Credito.display_credits()
+   

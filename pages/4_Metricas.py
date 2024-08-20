@@ -2,6 +2,7 @@
 # Importação das bibliotecas
 import pandas as pd
 import streamlit as st
+import Home.Credito as Credito
 
 # Importnado planilhas
 df = pd.read_csv('data/df_final.csv')
@@ -94,4 +95,6 @@ st.dataframe(df_filtered[columns], column_config={
 })
 
 # Configuração da barra lateral
-st.sidebar.markdown('Developer by: [Lucas Falcão](https://GitHub.com/Falkzera)')
+with st.sidebar:
+    Credito.display_credits()
+   

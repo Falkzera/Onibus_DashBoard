@@ -2,13 +2,11 @@
 # Importação das bibliotecas
 import pandas as pd
 import streamlit as st
+import Home.Credito as Credito
 
 # Importnado planilhas
 df = pd.read_csv('data/df_final.csv')
 df['DATA'] = pd.to_datetime(df['DATA'])
-
-# Adicionando em outras páginas
-st.session_state['df'] = df
 
 # Dados das tarifas
 dados_tarifas = {
@@ -23,10 +21,6 @@ df_tarifas['DATA'] = pd.to_datetime(df_tarifas['DATA'], format='%d/%m/%Y')
 st.set_page_config(page_title="Empresas", page_icon=None, layout="wide", initial_sidebar_state="auto", menu_items=None)
 
 st.title('Análise Geral das Empresas 🚌')
-# 📈
-
-# Configuração da barra lateral
-st.sidebar.markdown('Developer by: [Lucas Falcão](https://GitHub.com/Falkzera)')
 
 # Colunas para realizar cálculos
 colunas_para_somar = [
@@ -81,7 +75,7 @@ def obter_tarifa(data_inicial, data_final):
 error = False
 try:
     valor_total = df_filtrado['RECEITA'].sum()
-    variacao_tarifa = round(((df_filtrado['RECEITA'].iloc[-1] - df_filtrado['RECEITA'].iloc[0]) / df_filtrado['RECEITA'].iloc[0]) * 100, 2)
+    variacao_receita = round(((df_filtrado['RECEITA'].iloc[-1] - df_filtrado['RECEITA'].iloc[0]) / df_filtrado['RECEITA'].iloc[0]) * 100, 2)
     # Variacao de passageiros
     passageiro_total = df_filtrado['TOTAL'].sum()
     variacao_passageiro = round(((df_filtrado['TOTAL'].iloc[-1] - df_filtrado['TOTAL'].iloc[0]) / df_filtrado['TOTAL'].iloc[0]) * 100, 2)
@@ -99,21 +93,21 @@ try:
             st.metric(
                 label="Receita total no período",   
                 value = "R$ {:,.2f}".format(valor_total).replace(',', 'X').replace('.', ',').replace('X', '.'),
-                delta=f"Variação {variacao_tarifa:.2f}%"  
+                # delta=f"Variação {variacao_receita:.2f}%"  
             )
 
         with col2: # Formatar para :,2f para apresentar com duas casas decimais separados por virgula e o milhar por ponto como usa no brasileiro    
             st.metric(
                 label="Passageiro total no período",   
                 value = "{:,.2f}".format(passageiro_total).replace(',', 'X').replace('.', ',').replace('X', '.'),
-                delta=f"Variação {variacao_passageiro:.2f}%",   
+                # delta=f"Variação {variacao_passageiro:.2f}%",   
             )
 
         with col3: # Formatar para :,2f para apresentar com duas casas decimais separados por virgula e o milhar por ponto como usa no brasileiro    
             st.metric(
                 label="Passageiro total equivalente no período",   
                 value = "{:,.2f}".format(equivalente_total).replace(',', 'X').replace('.', ',').replace('X', '.'),
-                delta=f"Variação {variacao_equivalente:.2f}%",
+                # delta=f"Variação {variacao_equivalente:.2f}%",
             )
 except:
     st.error('Não existe dados para o período informado', icon="🚨")
@@ -152,3 +146,6 @@ if not error:
                     df_linha_chart.set_index('DATA', inplace=True)
                     st.area_chart(df_linha_chart)
 ########################################################################################################################################
+with st.sidebar:
+    Credito.display_credits()
+   
