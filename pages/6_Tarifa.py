@@ -79,7 +79,7 @@ with st.expander('Comparação Acumulada do Gasto da Renda Anual'):
     tipo_grafico_2 = st.selectbox('Escolha o tipo de gráfico', ['Barra', 'Linha'], key='tipo_grafico_2')
 
     # Adicionar um slider para escolher o ano inicial
-    ano_inicial_2 = st.slider('Ano Inicial', min_value=1994, max_value=int(df['ANO'].max()), value=2017, key='ano_inicial_2')
+    ano_inicial_2 = st.slider('Ano Inicial', min_value=1994, max_value=int(df['ANO'].max()), value=1994, key='ano_inicial_2')
     df_filtered_2 = df[df['ANO'] >= ano_inicial_2]
 
     # Calcular a proporção de TOTAL_PAGO em relação ao SALARIO_MINIMO_ANUAL
