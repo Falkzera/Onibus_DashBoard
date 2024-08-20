@@ -111,10 +111,6 @@ with st.expander('Comparação Acumulada do Gasto da Renda Anual'):
 
 
     df_filtered_2['GASTO_RENDA_ANUAL'] = df_filtered_2['GASTO_RENDA_ANUAL'].apply(lambda x: f'{x:.2f}%')
-
-
-
-
     # Calcular a coluna 'GASTO_RENDA_ANUAL'
     df_filtered_2['GASTO_RENDA_ANUAL'] = (df_filtered_2['TOTAL_PAGO'] / df_filtered_2['SALARIO_MINIMO_ANUAL']) * 100
 
@@ -137,3 +133,8 @@ with st.expander('Comparação Acumulada do Gasto da Renda Anual'):
             max_value=float(df_filtered_2['GASTO_RENDA_ANUAL'].max())
         )
     }, height=600, width=800)
+
+########################################################################################################################################
+with st.sidebar:
+    Credito.display_credits()
+   
