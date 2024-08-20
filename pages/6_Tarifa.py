@@ -3,8 +3,11 @@ import pandas as pd
 import plotly.express as px
 import Home.Credito as Credito
 
+# COnfiguração da página
+st.set_page_config(page_title="Tarifa", page_icon=None, layout="wide", initial_sidebar_state="auto", menu_items=None)
 
 df = pd.read_excel('data/Domingo/Gasto_Domingo.xlsx', sheet_name='GASTO_ANUAL')
+
 
 st.title('Análise da série histórica tarifária de Maceió')
 st.subheader('Considerando os dados de 1994 a 2024')

@@ -7,7 +7,7 @@ from streamlit_option_menu import option_menu
 import Home.Credito as Credito
 
 # COnfiguração da página
-st.set_page_config(page_title="Empresas", page_icon=None, layout="wide", initial_sidebar_state="auto", menu_items=None)
+st.set_page_config(page_title="Eventos", page_icon=None, layout="wide", initial_sidebar_state="auto", menu_items=None)
 
 
 # Configuração do Tema
