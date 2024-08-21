@@ -144,26 +144,93 @@ with st.expander('Comparação Acumulada do Gasto da Renda Anual'):
         )
     }, height=500, width=900)
 
+########################################################################################################################################   
+########################################################################################################################################
 
-with st.expander('COMPARAÇÃO DE GESTÃO'):
-    # Fazer a comparação de gestão
 
-    #filtrar ano
-    ano_inicial = st.slider('Selecione o ano inicial', min_value=2000, max_value=int(df['ANO'].max()), value=2000)
-    df = df[df['ANO'] >= ano_inicial]
-    df_gestao = df.groupby(['PREFEITO', 'ANO']).sum().reset_index()
-    df_gestao['GASTO_RENDA_ANUAL'] = (df_gestao['TOTAL_PAGO'] / df_gestao['SALARIO_MINIMO_ANUAL']) * 100
+with st.expander('COMPARAÇÃO DE GESTÃO COMPLETO'):
+
+    # Carregar o novo DataFrame
+    df_novo = pd.read_excel("data/GASTOS_GROUPED.xlsx")
+    # Remover de PREFEITO as '[]' e as aspas
+    df_novo['PREFEITO'] = df_novo['PREFEITO'].str.replace('[', '').str.replace(']', '').str.replace("'", '')
+
+    # Colunas de gasto para comparação
+    colunas_gasto1 = ['GASTO_1_PESSOA_FILHO_3_PERCENT', 'GASTO_1_PESSOA_FILHO_2_PERCENT', 'GASTO_1_PESSOA_FILHO_1_PERCENT', 'GASTO_ANUAL_SEM_FILHO_PERCENT']
+    colunas_gasto = ['3 filhos', '2 filhos', '1 filho', 'sem filhos']
+
+    mapeamento_colunas = dict(zip(colunas_gasto1, colunas_gasto))
+
+    # Renomear as colunas no DataFrame
+    df_novo.rename(columns=mapeamento_colunas, inplace=True)
+
+    # Adicionar um selectbox para selecionar a coluna a ser visualizada
+    coluna_selecionada = st.selectbox('Selecione os cenários', colunas_gasto)
+
+    # Adicionar um slider para filtrar o DataFrame por ano
+    ano_inicial = st.slider('Selecione o périodo de análise', min_value=2000, max_value=2024, value=2000)
+    df_novo = df_novo[df_novo['ANO'] >= ano_inicial]
+
+    # Fazer a comparação de gestão para a coluna selecionada
+    df_gestao = df_novo.groupby(['PREFEITO', 'ANO'])[coluna_selecionada].mean().reset_index()
 
     # Ordenar os prefeitos pelos seus anos de gestão
     df_gestao = df_gestao.sort_values(by='ANO')
 
-    # Criar o gráfico de linha
-    fig_gestao = px.line(df_gestao, x='ANO', y='GASTO_RENDA_ANUAL', color='PREFEITO',
-                         labels={'GASTO_RENDA_ANUAL': 'Proporção do Gasto da Renda Anual', 'ANO_GESTAO': 'Ano de Gestão'},
-                         title='Proporção do Gasto da Renda Anual por Prefeito ao Longo dos Anos')
-    fig_gestao.update_layout(xaxis_title='Ano de Gestão', yaxis_title='Proporção do Gasto da Renda Anual')
+    # Adicionar uma checkbox para permitir a seleção de exibir pontos ou não
+    exibir_pontos = st.checkbox('Exibir pontos no gráfico', value=True)
+
+    # Criar o gráfico de linha com ou sem pontos
+    fig_gestao = px.line(df_gestao, x='ANO', y=coluna_selecionada, color='PREFEITO',
+                         labels={coluna_selecionada: f'Proporção do Gasto ({coluna_selecionada})', 'ANO': 'Ano de Gestão'},
+                         title=f'Proporção do gasto anual com transporte público possuíndo {coluna_selecionada} por gestão ao Longo dos Anos',
+                         markers=exibir_pontos)
+
+    # Adicionar anotações de texto para cada ponto, se a opção de exibir pontos estiver selecionada
+    if exibir_pontos:
+        for i in range(len(df_gestao)):
+            fig_gestao.add_annotation(x=df_gestao['ANO'][i], y=df_gestao[coluna_selecionada][i],
+                                      text=f"{df_gestao[coluna_selecionada][i]:.2f}%",
+                                      showarrow=True, arrowhead=2, ax=0, ay=-20)
+
+    fig_gestao.update_layout(xaxis_title=None, yaxis_title=None)
     st.plotly_chart(fig_gestao)
+
+# Adicionar um checkbox para exibir o DataFrame
+    df_novo = df_novo.sort_values(by=['ANO', 'PREFEITO'])
+    df_penultimo_ano = df_novo.groupby('PREFEITO').nth(-2).reset_index()
+
+    st.dataframe(df_penultimo_ano[['PREFEITO', '3 filhos', '2 filhos', '1 filho', 'sem filhos']], column_config={
+        "3 filhos": st.column_config.ProgressColumn(
+            "Gasto da Renda Anual (3 filhos)", 
+            format="%.2f%%", 
+            min_value=0, 
+            max_value=float(df_penultimo_ano['3 filhos'].max())
+        ),
+        "2 filhos": st.column_config.ProgressColumn(
+            "Gasto da Renda Anual (2 filhos)", 
+            format="%.2f%%", 
+            min_value=0, 
+            max_value=float(df_penultimo_ano['2 filhos'].max())
+        ),
+        "1 filho": st.column_config.ProgressColumn(
+            "Gasto da Renda Anual (1 filho)", 
+            format="%.2f%%", 
+            min_value=0, 
+            max_value=float(df_penultimo_ano['1 filho'].max())
+        ),
+        "sem filhos": st.column_config.ProgressColumn(
+            "Gasto da Renda Anual (sem filhos)", 
+            format="%.2f%%", 
+            min_value=0, 
+            max_value=float(df_penultimo_ano['sem filhos'].max())
+        )
+    }, height=175, width=1200)
+
+    st.write('De acordo com os dados, é nítido que a gestão do Prefeito JHC foi o que mais benéficiou os cidadão Maceioense com o transporte público, em comparação com as gestões anteriores.')
+    st.write('Diversas políticas públicas foram empregadas durante esse período, como a implantação do Domingo é Livre e o Passa Gratuito para estudantes e diversas opções de integração entre linhas.')
+
 ########################################################################################################################################
 with st.sidebar:
     Credito.display_credits()
-   
+
