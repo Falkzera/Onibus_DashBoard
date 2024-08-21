@@ -9,6 +9,13 @@ st.set_page_config(page_title="Tarifa", page_icon=None, layout="wide", initial_s
 df = pd.read_excel('data/Domingo/Gasto_Domingo.xlsx', sheet_name='GASTO_ANUAL')
 
 
+df['PREFEITO'] = 'KATIA BORN'
+df.loc[df['ANO'] >= 2005, 'PREFEITO'] = 'CÍCERO ALMEIDA'
+df.loc[df['ANO'] >= 2013, 'PREFEITO'] = 'RUI PALMEIRA'
+df.loc[df['ANO'] >= 2017, 'PREFEITO'] = 'JHC'
+
+
+
 st.title('Análise da série histórica tarifária de Maceió')
 st.subheader('Considerando os dados de 1994 a 2024')
 st.write('Análise da série histórica tarifária de Maceió, considerando os dados de 1994 a 2024. A análise é dividida em duas partes:')
@@ -135,8 +142,27 @@ with st.expander('Comparação Acumulada do Gasto da Renda Anual'):
             min_value=0, 
             max_value=float(df_filtered_2['GASTO_RENDA_ANUAL'].max())
         )
-    }, height=600, width=800)
+    }, height=500, width=900)
 
+
+with st.expander('COMPARAÇÃO DE GESTÃO'):
+    # Fazer a comparação de gestão
+
+    #filtrar ano
+    ano_inicial = st.slider('Selecione o ano inicial', min_value=2000, max_value=int(df['ANO'].max()), value=2000)
+    df = df[df['ANO'] >= ano_inicial]
+    df_gestao = df.groupby(['PREFEITO', 'ANO']).sum().reset_index()
+    df_gestao['GASTO_RENDA_ANUAL'] = (df_gestao['TOTAL_PAGO'] / df_gestao['SALARIO_MINIMO_ANUAL']) * 100
+
+    # Ordenar os prefeitos pelos seus anos de gestão
+    df_gestao = df_gestao.sort_values(by='ANO')
+
+    # Criar o gráfico de linha
+    fig_gestao = px.line(df_gestao, x='ANO', y='GASTO_RENDA_ANUAL', color='PREFEITO',
+                         labels={'GASTO_RENDA_ANUAL': 'Proporção do Gasto da Renda Anual', 'ANO_GESTAO': 'Ano de Gestão'},
+                         title='Proporção do Gasto da Renda Anual por Prefeito ao Longo dos Anos')
+    fig_gestao.update_layout(xaxis_title='Ano de Gestão', yaxis_title='Proporção do Gasto da Renda Anual')
+    st.plotly_chart(fig_gestao)
 ########################################################################################################################################
 with st.sidebar:
     Credito.display_credits()
