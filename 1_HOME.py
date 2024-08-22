@@ -4,13 +4,6 @@ import streamlit as st
 import Home.Credito as Credito
 
 
-# Importnado planilhas
-df = pd.read_csv('data/df_final.csv')
-df['DATA'] = pd.to_datetime(df['DATA'])
-
-# Adicionando em outras páginas
-st.session_state['df'] = df
-
 
 # Configuração da página
 st.set_page_config(page_title="Intro", page_icon=None, layout="wide", initial_sidebar_state="auto", menu_items=None)
